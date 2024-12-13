@@ -203,7 +203,7 @@ export default function BehaviouralActivationApp() {
     switch (currentStep) {
       case 1:
         return (
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Step 1: Baseline Diary</CardTitle>
               <CardDescription>Track your current state and activities</CardDescription>
@@ -211,17 +211,17 @@ export default function BehaviouralActivationApp() {
             <CardContent>
               <Button
                 onClick={() => setShowBaselineDiaryDialog(true)}
-                className="mb-4 w-right bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
+                className="mb-4 w-full sm:w-auto text-sm sm:text-base bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
-                Add Baseline Diary
+                Add Baseline Diary Log
               </Button>
               <div className="space-y-4">
                 {baselineDiaryLogs.map((log) => (
-                  <Card key={log.id}>
+                  <Card key={log.id} className="overflow-hidden">
                     <CardHeader>
                       <CardTitle className="flex justify-between items-center">
-                        <span>Diary for {formatDate(log.date)}</span>
+                        <span>Log for {formatDate(log.date)}</span>
                         <div>
                           <Button
                             variant="ghost"
@@ -273,14 +273,14 @@ export default function BehaviouralActivationApp() {
               </div>
               <Button
                 onClick={() => setShowNewActivityDialog(true)}
-                className="mt-4 w-right bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
+                className="mt-4 w-full sm:w-auto text-sm sm:text-base bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
                 Add New Task / Activity
               </Button>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                 {activities.map((activity) => (
-                  <Card key={activity.id}>
+                  <Card key={activity.id} className="overflow-hidden">
                     <CardHeader>
                       <CardTitle>{activity.name}</CardTitle>
                       <CardDescription>{activity.type}</CardDescription>
@@ -295,7 +295,7 @@ export default function BehaviouralActivationApp() {
                 <h3 className="text-lg font-semibold mb-4">Suggestions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(activitySuggestions).map(([type, suggestions]) => (
-                    <Card key={type}>
+                    <Card key={type} className="overflow-hidden">
                       <CardHeader>
                         <CardTitle>{type}</CardTitle>
                       </CardHeader>
@@ -315,7 +315,7 @@ export default function BehaviouralActivationApp() {
         )
       case 2:
         return (
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Step 2: Identify Activities</CardTitle>
               <CardDescription>List activities you've stopped doing or would like to do</CardDescription>
@@ -323,14 +323,14 @@ export default function BehaviouralActivationApp() {
             <CardContent>
               <Button
                 onClick={() => setShowNewActivityDialog(true)}
-                className="mb-4 w-right bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
+                className="mb-4 w-full sm:w-auto text-sm sm:text-base bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
                 Add New Activity
               </Button>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {activityTypes.map((type) => (
-                  <Card key={type}>
+                  <Card key={type} className="overflow-hidden">
                     <CardHeader>
                       <CardTitle>{type}</CardTitle>
                     </CardHeader>
@@ -351,7 +351,7 @@ export default function BehaviouralActivationApp() {
         )
       case 3:
         return (
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Step 3: Organize by Difficulty</CardTitle>
               <CardDescription>Categorize activities based on their difficulty</CardDescription>
@@ -359,7 +359,7 @@ export default function BehaviouralActivationApp() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {difficultyLevels.map((level) => (
-                  <Card key={level}>
+                  <Card key={level} className="overflow-hidden">
                     <CardHeader>
                       <CardTitle>{level}</CardTitle>
                     </CardHeader>
@@ -380,7 +380,7 @@ export default function BehaviouralActivationApp() {
         )
       case 4:
         return (
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Step 4: Plan Your Week</CardTitle>
               <CardDescription>Schedule activities for each day</CardDescription>
@@ -388,14 +388,14 @@ export default function BehaviouralActivationApp() {
             <CardContent>
               <Button
                 onClick={() => setShowNewDiaryEntryDialog(true)}
-                className="mb-4 w-right bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
+                className="mb-4 w-full sm:w-auto text-sm sm:text-base bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
                 Plan your Days
               </Button>
               <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
                 {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                  <Card key={day}>
+                  <Card key={day} className="overflow-hidden">
                     <CardHeader>
                       <CardTitle>{day}</CardTitle>
                     </CardHeader>
@@ -432,7 +432,7 @@ export default function BehaviouralActivationApp() {
 
   const renderAchievements = () => {
     return (
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Achievements</CardTitle>
           <CardDescription>Track your progress and unlock rewards</CardDescription>
@@ -440,7 +440,7 @@ export default function BehaviouralActivationApp() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {achievements.map((achievement) => (
-              <Card key={achievement.id} className={achievement.unlocked ? "border-green-500" : "opacity-50"}>
+              <Card key={achievement.id} className={`${achievement.unlocked ? "border-green-500" : "opacity-50"} overflow-hidden`}>
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     {achievement.icon}
@@ -465,7 +465,7 @@ export default function BehaviouralActivationApp() {
     const completionRate = totalActivities > 0 ? (completedActivities / totalActivities) * 100 : 0
 
     return (
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Weekly Review</CardTitle>
           <CardDescription>Track your progress and activity completion</CardDescription>
@@ -515,7 +515,7 @@ export default function BehaviouralActivationApp() {
         transition={{ duration: 1 }}
       >
         <motion.div
-          className="relative w-64 h-64 mb-8"
+          className="relative w-32 h-32 sm:w-64 sm:h-64 mb-4 sm:mb-8"
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
@@ -534,7 +534,7 @@ export default function BehaviouralActivationApp() {
           </motion.div>
         </motion.div>
         <motion.h1 
-          className="text-4xl md:text-6xl font-bold mb-4 text-center"
+          className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2 sm:mb-4 text-center"
           initial={{ y: -50 }}
           animate={{ y: 0 }}
           transition={{ delay: 0.5 }}
@@ -543,7 +543,7 @@ export default function BehaviouralActivationApp() {
           Behavioural Activation
         </motion.h1>
         <motion.p 
-          className="text-xl mb-8 text-center max-w-md text-[#1A237E]"
+          className="text-sm sm:text-base md:text-xl mb-4 sm:mb-8 text-center max-w-xs sm:max-w-sm md:max-w-md text-[#1A237E]"
           initial={{ y: 50 }}
           animate={{ y: 0 }}
           transition={{ delay: 0.7 }}
@@ -551,7 +551,7 @@ export default function BehaviouralActivationApp() {
           Take small steps to improve your mood and regain balance in your life
         </motion.p>
         <motion.button
-          className="px-8 py-3 bg-[#FF5722] text-white rounded-full font-semibold text-lg shadow-lg hover:opacity-90 transition duration-300"
+          className="px-6 py-2 sm:px-8 sm:py-3 bg-[#FF5722] text-white rounded-full font-semibold text-sm sm:text-base md:text-lg shadow-lg hover:opacity-90 transition duration-300"
           onClick={() => {
             setShowSplash(false)
             setShowInstructions(true)
@@ -566,14 +566,14 @@ export default function BehaviouralActivationApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#E91E63]/10 to-[#4CAF50]/10 p-4 md:p-8">
-      <h1 className="text-3xl font-bold text-[#1A237E] mb-8 text-center">Behavioural Activation Journey</h1>
+    <div className="min-h-screen bg-gradient-to-br from-[#E91E63]/10 to-[#4CAF50]/10 p-2 sm:p-4 md:p-8">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#1A237E] mb-4 sm:mb-8 text-center">Behavioural Activation Journey</h1>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="journey">Journey</TabsTrigger>
-          <TabsTrigger value="achievements">Achievements</TabsTrigger>
-          <TabsTrigger value="review">Review</TabsTrigger>
+          <TabsTrigger value="journey" className="text-xs sm:text-sm">Journey</TabsTrigger>
+          <TabsTrigger value="achievements" className="text-xs sm:text-sm">Achievements</TabsTrigger>
+          <TabsTrigger value="review" className="text-xs sm:text-sm">Review</TabsTrigger>
         </TabsList>
         <TabsContent value="journey">
           <AnimatePresence mode="wait">
@@ -597,7 +597,7 @@ export default function BehaviouralActivationApp() {
       </Tabs>
 
       <Dialog open={showNewActivityDialog} onOpenChange={setShowNewActivityDialog}>
-        <DialogContent>
+        <DialogContent className="w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
           <DialogHeader>
             <DialogTitle>Add New Activity</DialogTitle>
             <DialogDescription>
@@ -655,7 +655,7 @@ export default function BehaviouralActivationApp() {
       </Dialog>
 
       <Dialog open={showNewDiaryEntryDialog} onOpenChange={setShowNewDiaryEntryDialog}>
-        <DialogContent>
+        <DialogContent className="w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
           <DialogHeader>
             <DialogTitle>Schedule Activities</DialogTitle>
             <DialogDescription>
@@ -729,10 +729,10 @@ export default function BehaviouralActivationApp() {
           setViewingBaselineLog(null)
         }
       }}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              {viewingBaselineLog ? 'View Baseline Diary' : editingBaselineLog ? 'Edit Baseline Diary' : 'Add Baseline Diary'}
+              {viewingBaselineLog ? 'View Baseline Diary Log' : editingBaselineLog ? 'Edit Baseline Diary Log' : 'Add Baseline Diary Log'}
             </DialogTitle>
             <DialogDescription>
               {viewingBaselineLog ? 'View your recorded state' : 'Record your current state to track your progress'}
@@ -772,13 +772,13 @@ export default function BehaviouralActivationApp() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="mood">Mood</Label>
-                <div className="flex justify-between">
+                <div className="grid grid-cols-3 sm:flex sm:justify-between gap-2 sm:gap-0">
                   {moodEmojis.map((moodEmoji) => (
                     <Button
                       key={moodEmoji.name}
                       type="button"
                       variant={editingBaselineLog?.mood === moodEmoji.name || viewingBaselineLog?.mood === moodEmoji.name ? "default" : "outline"}
-                      className="flex-1 mx-1"
+                      className="flex flex-col items-center justify-center p-2 sm:flex-1 sm:mx-1"
                       onClick={() => {
                         if (!viewingBaselineLog) {
                           const moodInput = document.getElementById('mood') as HTMLInputElement
@@ -787,8 +787,8 @@ export default function BehaviouralActivationApp() {
                       }}
                       disabled={!!viewingBaselineLog}
                     >
-                      <span className="text-2xl mr-2">{moodEmoji.emoji}</span>
-                      <span>{moodEmoji.name}</span>
+                      <span className="text-2xl mb-1">{moodEmoji.emoji}</span>
+                      <span className="text-xs sm:text-sm">{moodEmoji.name}</span>
                     </Button>
                   ))}
                 </div>
@@ -872,7 +872,7 @@ export default function BehaviouralActivationApp() {
             <DialogFooter>
               {!viewingBaselineLog && (
                 <Button type="submit" className="w-full bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90">
-                  {editingBaselineLog ? 'Update Diary' : 'Add Diary'}
+                  {editingBaselineLog ? 'Update Log' : 'Add Log'}
                 </Button>
               )}
             </DialogFooter>
@@ -881,19 +881,19 @@ export default function BehaviouralActivationApp() {
       </Dialog>
 
       {activeTab === "journey" && (
-        <div className="mt-8 flex justify-between items-center">
+        <div className="mt-4 sm:mt-8 flex flex-col sm:flex-row justify-between items-center">
           <Button
             onClick={() => setShowInstructions(true)}
-            className="bg-[#3F51B5] hover:bg-[#3F51B5]/90 text-white"
+            className="mb-2 sm:mb-0 w-full sm:w-auto bg-[#3F51B5] hover:bg-[#3F51B5]/90 text-white"
           >
             <HelpCircle className="w-4 h-4 mr-2" />
             Instructions
           </Button>
-          <div className="space-x-4">
+          <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto">
             <Button
               onClick={() => setCurrentStep((prev) => Math.max(prev - 1, 1))}
               disabled={currentStep === 1}
-              className="bg-[#FF5722] hover:bg-[#FF5722]/90 text-white"
+              className="flex-1 sm:flex-none bg-[#FF5722] hover:bg-[#FF5722]/90 text-white"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Previous
@@ -901,7 +901,7 @@ export default function BehaviouralActivationApp() {
             <Button
               onClick={() => setCurrentStep((prev) => Math.min(prev + 1, 4))}
               disabled={currentStep === 4}
-              className="bg-[#FF5722] hover:bg-[#FF5722]/90 text-white"
+              className="flex-1 sm:flex-none bg-[#FF5722] hover:bg-[#FF5722]/90 text-white"
             >
               Next
               <ArrowRight className="w-4 h-4 ml-2" />
