@@ -221,7 +221,7 @@ export default function BehaviouralActivationApp() {
                   <Card key={log.id}>
                     <CardHeader>
                       <CardTitle className="flex justify-between items-center">
-                        <span>Log for {formatDate(log.date)}</span>
+                        <span>Diary for {formatDate(log.date)}</span>
                         <div>
                           <Button
                             variant="ghost"
@@ -732,7 +732,7 @@ export default function BehaviouralActivationApp() {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              {viewingBaselineLog ? 'View Baseline Diary Log' : editingBaselineLog ? 'Edit Baseline Diary Log' : 'Add Baseline Diary Log'}
+              {viewingBaselineLog ? 'View Baseline Diary' : editingBaselineLog ? 'Edit Baseline Diary' : 'Add Baseline Diary'}
             </DialogTitle>
             <DialogDescription>
               {viewingBaselineLog ? 'View your recorded state' : 'Record your current state to track your progress'}
@@ -872,7 +872,7 @@ export default function BehaviouralActivationApp() {
             <DialogFooter>
               {!viewingBaselineLog && (
                 <Button type="submit" className="w-full bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90">
-                  {editingBaselineLog ? 'Update Log' : 'Add Log'}
+                  {editingBaselineLog ? 'Update Diary' : 'Add Diary'}
                 </Button>
               )}
             </DialogFooter>
