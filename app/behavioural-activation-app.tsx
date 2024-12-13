@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
 import { PlusCircle, Sun, Cloud, Moon, ArrowRight, ArrowLeft, HelpCircle, Smile, Frown, Meh, Award, CheckCircle2, Edit, Trash, Eye } from 'lucide-react'
@@ -47,11 +46,8 @@ interface BaselineDiaryLog {
   date: string
   time: string
   mood: string
-  energyLevel: number
-  stressLevel: number
-  sleepHours: number
-  feelings: string
-  goals: string
+  weeklyRoutine: string[]
+  currentTasks: string[]
   reflection: string
 }
 
@@ -89,6 +85,14 @@ const activitySuggestions = {
 
 const activityEmojis = ["🏃‍♂️", "🧘‍♀️", "📚", "🎨", "🍳", "🧹", "🌱", "🎵", "👫", "🏞️"]
 
+const moodEmojis = [
+  { emoji: "😄", name: "Happy" },
+  { emoji: "😊", name: "Content" },
+  { emoji: "😐", name: "Neutral" },
+  { emoji: "😔", name: "Sad" },
+  { emoji: "😠", name: "Angry" }
+]
+
 export default function BehaviouralActivationApp() {
   const [showSplash, setShowSplash] = useState(true)
   const [showInstructions, setShowInstructions] = useState(false)
@@ -100,6 +104,7 @@ export default function BehaviouralActivationApp() {
   const [activeTab, setActiveTab] = useState("journey")
   const [currentEmojiIndex, setCurrentEmojiIndex] = useState(0)
   const [achievements, setAchievements] = useState<Achievement[]>([
+    { id: '0', title: 'Baseline Creator', description: 'Create your first baseline diary entry', icon: <Award className="w-6 h-6 text-purple-500" />, unlocked: false },
     { id: '1', title: 'First Step', description: 'Add your first activity', icon: <Award className="w-6 h-6 text-yellow-500" />, unlocked: false },
     { id: '2', title: 'Consistent Tracker', description: 'Log your mood for 7 consecutive days', icon: <Award className="w-6 h-6 text-blue-500" />, unlocked: false },
     { id: '3', title: 'Activity Master', description: 'Complete 20 activities', icon: <Award className="w-6 h-6 text-green-500" />, unlocked: false },
@@ -135,7 +140,11 @@ export default function BehaviouralActivationApp() {
   }
 
   const addBaselineDiaryLog = (log: BaselineDiaryLog) => {
-    setBaselineDiaryLogs([...baselineDiaryLogs, log])
+    setBaselineDiaryLogs([...baselineDiaryLogs, {
+      ...log,
+      weeklyRoutine: log.weeklyRoutine.filter(item => item.trim() !== ''),
+      currentTasks: log.currentTasks.filter(item => item.trim() !== '')
+    }])
     checkAchievements()
   }
 
@@ -149,14 +158,17 @@ export default function BehaviouralActivationApp() {
 
   const checkAchievements = () => {
     const updatedAchievements = [...achievements]
-    if (activities.length > 0 && !achievements[0].unlocked) {
+    if (baselineDiaryLogs.length > 0 && !achievements[0].unlocked) {
       updatedAchievements[0].unlocked = true
     }
-    if (baselineDiaryLogs.length >= 7 && !achievements[1].unlocked) {
+    if (activities.length > 0 && !achievements[1].unlocked) {
       updatedAchievements[1].unlocked = true
     }
-    if (diaryEntries.filter(entry => entry.completed).length >= 20 && !achievements[2].unlocked) {
+    if (baselineDiaryLogs.length >= 7 && !achievements[2].unlocked) {
       updatedAchievements[2].unlocked = true
+    }
+    if (diaryEntries.filter(entry => entry.completed).length >= 20 && !achievements[3].unlocked) {
+      updatedAchievements[3].unlocked = true
     }
     setAchievements(updatedAchievements)
   }
@@ -164,6 +176,19 @@ export default function BehaviouralActivationApp() {
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split('-')
     return `${day}/${month}/${year}`
+  }
+
+  const calculateAverageWeeklyMood = () => {
+    const moodValues = {
+      "Happy": 5,
+      "Content": 4,
+      "Neutral": 3,
+      "Sad": 2,
+      "Angry": 1
+    }
+    const weeklyMoods = baselineDiaryLogs.slice(-7).map(log => moodValues[log.mood as keyof typeof moodValues])
+    const averageMood = weeklyMoods.reduce((sum, mood) => sum + mood, 0) / weeklyMoods.length
+    return averageMood.toFixed(1)
   }
 
   const instructions = [
@@ -189,7 +214,7 @@ export default function BehaviouralActivationApp() {
                 className="mb-4 w-right bg-gradient-to-r from-[#FF1F7D] to-[#4B4AEF] text-white hover:opacity-90"
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
-                Add Baseline Diary Log
+                Add Baseline Diary
               </Button>
               <div className="space-y-4">
                 {baselineDiaryLogs.map((log) => (
@@ -230,9 +255,18 @@ export default function BehaviouralActivationApp() {
                     </CardHeader>
                     <CardContent>
                       <p>Mood: {log.mood}</p>
-                      <p>Energy Level: {log.energyLevel}/10</p>
-                      <p>Stress Level: {log.stressLevel}/10</p>
-                      <p>Goals: {log.goals}</p>
+                      <p>Weekly Routine:</p>
+                      <ul className="list-disc pl-5">
+                        {log.weeklyRoutine.slice(0, 2).map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                      <p>Current Tasks:</p>
+                      <ul className="list-disc pl-5">
+                        {log.currentTasks.slice(0, 2).map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
                     </CardContent>
                   </Card>
                 ))}
@@ -404,7 +438,7 @@ export default function BehaviouralActivationApp() {
           <CardDescription>Track your progress and unlock rewards</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {achievements.map((achievement) => (
               <Card key={achievement.id} className={achievement.unlocked ? "border-green-500" : "opacity-50"}>
                 <CardHeader>
@@ -461,6 +495,10 @@ export default function BehaviouralActivationApp() {
                 )
               })}
             </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Average Weekly Mood</h3>
+              <p>{calculateAverageWeeklyMood()} / 5</p>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -500,11 +538,7 @@ export default function BehaviouralActivationApp() {
           initial={{ y: -50 }}
           animate={{ y: 0 }}
           transition={{ delay: 0.5 }}
-          style={{
-            background: `linear-gradient(45deg, ${Object.values(colors).join(', ')})`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
+          style={{ color: colors.pink }}
         >
           Behavioural Activation
         </motion.h1>
@@ -517,7 +551,7 @@ export default function BehaviouralActivationApp() {
           Take small steps to improve your mood and regain balance in your life
         </motion.p>
         <motion.button
-          className="px-8 py-3 bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#4CAF50] text-white rounded-full font-semibold text-lg shadow-lg hover:opacity-90 transition duration-300"
+          className="px-8 py-3 bg-[#FF5722] text-white rounded-full font-semibold text-lg shadow-lg hover:opacity-90 transition duration-300"
           onClick={() => {
             setShowSplash(false)
             setShowInstructions(true)
@@ -713,11 +747,8 @@ export default function BehaviouralActivationApp() {
               date: formData.get('date') as string,
               time: formData.get('time') as string,
               mood: formData.get('mood') as string,
-              energyLevel: Number(formData.get('energyLevel')),
-              stressLevel: Number(formData.get('stressLevel')),
-              sleepHours: Number(formData.get('sleepHours')),
-              feelings: formData.get('feelings') as string,
-              goals: formData.get('goals') as string,
+              weeklyRoutine: formData.getAll('weeklyRoutine') as string[],
+              currentTasks: formData.getAll('currentTasks') as string[],
               reflection: formData.get('reflection') as string,
             }
             if (editingBaselineLog) {
@@ -741,29 +772,97 @@ export default function BehaviouralActivationApp() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="mood">Mood</Label>
-                <Input id="mood" name="mood" required defaultValue={editingBaselineLog?.mood || viewingBaselineLog?.mood} readOnly={!!viewingBaselineLog} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="energyLevel">Energy Level (1-10)</Label>
-                  <Input id="energyLevel" name="energyLevel" type="number" min="1" max="10" required defaultValue={editingBaselineLog?.energyLevel || viewingBaselineLog?.energyLevel} readOnly={!!viewingBaselineLog} />
+                <div className="flex justify-between">
+                  {moodEmojis.map((moodEmoji) => (
+                    <Button
+                      key={moodEmoji.name}
+                      type="button"
+                      variant={editingBaselineLog?.mood === moodEmoji.name || viewingBaselineLog?.mood === moodEmoji.name ? "default" : "outline"}
+                      className="flex-1 mx-1"
+                      onClick={() => {
+                        if (!viewingBaselineLog) {
+                          const moodInput = document.getElementById('mood') as HTMLInputElement
+                          moodInput.value = moodEmoji.name
+                        }
+                      }}
+                      disabled={!!viewingBaselineLog}
+                    >
+                      <span className="text-2xl mr-2">{moodEmoji.emoji}</span>
+                      <span>{moodEmoji.name}</span>
+                    </Button>
+                  ))}
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="stressLevel">Stress Level (1-10)</Label>
-                  <Input id="stressLevel" name="stressLevel" type="number" min="1" max="10" required defaultValue={editingBaselineLog?.stressLevel || viewingBaselineLog?.stressLevel} readOnly={!!viewingBaselineLog} />
+                <Input id="mood" name="mood" type="hidden" required defaultValue={editingBaselineLog?.mood || viewingBaselineLog?.mood} />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="weeklyRoutine">Weekly Routine</Label>
+                <div id="weeklyRoutine-container" className="space-y-2 max-h-40 overflow-y-auto pr-2">
+                  {(editingBaselineLog?.weeklyRoutine || viewingBaselineLog?.weeklyRoutine || ['', '']).map((item, index) => (
+                    <Input
+                      key={index}
+                      id={`weeklyRoutine-${index}`}
+                      name="weeklyRoutine"
+                      defaultValue={item}
+                      readOnly={!!viewingBaselineLog}
+                      placeholder={`Routine item ${index + 1}`}
+                    />
+                  ))}
                 </div>
+                {!viewingBaselineLog && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const container = document.getElementById('weeklyRoutine-container');
+                      if (container) {
+                        const newInput = document.createElement('input');
+                        newInput.name = 'weeklyRoutine';
+                        newInput.className = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+                        newInput.placeholder = `Routine item ${container.children.length + 1}`;
+                        container.appendChild(newInput);
+                        container.scrollTop = container.scrollHeight;
+                      }
+                    }}
+                  >
+                    Add Routine Item
+                  </Button>
+                )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="sleepHours">Sleep (hours)</Label>
-                <Input id="sleepHours" name="sleepHours" type="number" step="0.5" required defaultValue={editingBaselineLog?.sleepHours || viewingBaselineLog?.sleepHours} readOnly={!!viewingBaselineLog} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="feelings">Notable Thoughts or Feelings</Label>
-                <Textarea id="feelings" name="feelings" required defaultValue={editingBaselineLog?.feelings || viewingBaselineLog?.feelings} readOnly={!!viewingBaselineLog} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="goals">Goals</Label>
-                <Textarea id="goals" name="goals" required defaultValue={editingBaselineLog?.goals || viewingBaselineLog?.goals} readOnly={!!viewingBaselineLog} />
+                <Label htmlFor="currentTasks">Current Tasks</Label>
+                <div id="currentTasks-container" className="space-y-2 max-h-40 overflow-y-auto pr-2">
+                  {(editingBaselineLog?.currentTasks || viewingBaselineLog?.currentTasks || ['', '']).map((item, index) => (
+                    <Input
+                      key={index}
+                      id={`currentTasks-${index}`}
+                      name="currentTasks"
+                      defaultValue={item}
+                      readOnly={!!viewingBaselineLog}
+                      placeholder={`Task ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                {!viewingBaselineLog && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const container = document.getElementById('currentTasks-container');
+                      if (container) {
+                        const newInput = document.createElement('input');
+                        newInput.name = 'currentTasks';
+                        newInput.className = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+                        newInput.placeholder = `Task ${container.children.length + 1}`;
+                        container.appendChild(newInput);
+                        container.scrollTop = container.scrollHeight;
+                      }
+                    }}
+                  >
+                    Add Task
+                  </Button>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="reflection">Reflection</Label>
@@ -788,6 +887,7 @@ export default function BehaviouralActivationApp() {
             className="bg-[#3F51B5] hover:bg-[#3F51B5]/90 text-white"
           >
             <HelpCircle className="w-4 h-4 mr-2" />
+            Instructions
           </Button>
           <div className="space-x-4">
             <Button
